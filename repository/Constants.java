@@ -16,5 +16,7 @@ public class Constants {
 	public static String getPassword() {
 		return PASSWORD;
 	}
+	
+	// TODO: change in public without methods
 
 }

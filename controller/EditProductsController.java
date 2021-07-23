@@ -12,10 +12,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import model.Category;
 import model.Product;
+import repository.Constants;
 
 public class EditProductsController {
 
@@ -38,7 +40,7 @@ public class EditProductsController {
 	private ComboBox<Category> cmbType;
 
 	@FXML
-	private TextField txtComment;
+	private TextArea txtComment;
 
 	@FXML
 	private Button btnCategory;
@@ -55,11 +57,6 @@ public class EditProductsController {
 	// for the list of categories
 	private CategoryTableController catController = new CategoryTableController();
 
-	// connection to the db
-	private static final String DB_URL = "jdbc:mariadb://localhost/productDB";
-	private static final String USERNAME = "root";
-	private static final String PASSWORD = "";
-
 	List<Category> categories;
 
 	@FXML
@@ -67,7 +64,7 @@ public class EditProductsController {
 		System.out.println("initializing...");
 
 		// calling the controller to fill the list of categories
-		catController.setConnection(DB_URL, USERNAME, PASSWORD);
+		catController.setConnection(Constants.getDbUrl(), Constants.getUsername(), Constants.getPassword());
 		categories = catController.getAllCategories();
 
 		for (Category category : categories) {
@@ -149,6 +146,7 @@ public class EditProductsController {
 	public void onAddCategory(ActionEvent event) throws IOException {
 		CategoryTableWindow ctw = new CategoryTableWindow();
 		ctw.showModal();
+		// TODO: reload, ask
 	}
 
 	private void checkValid() {

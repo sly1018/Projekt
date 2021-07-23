@@ -6,9 +6,11 @@ import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
@@ -18,6 +20,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.util.Callback;
 import model.Product;
 import repository.ProductDbRepository;
 import repository.ProductRepository;
@@ -59,6 +62,7 @@ public class ProductTableController {
 	@FXML
 	private TableColumn<Product, Integer> colQuantity;
 
+	// TODO: Integer in String umwandeln
 	@FXML
 	private TableColumn<Product, Integer> colCat;
 
@@ -125,6 +129,18 @@ public class ProductTableController {
 		colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
 		colQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
 		colCat.setCellValueFactory(new PropertyValueFactory<>("categoryId"));
+		
+		// showing the string of category 
+		// TODO: colCat.setCellValueFactory(this::createCategoryCell)
+		colCat.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Product,Integer>, ObservableValue<Integer>>() {
+			// wird immer aufgerufen wenn eine TableCell von colCat erzeugt wird
+			@Override
+			public ObservableValue<Integer> call(CellDataFeatures<Product, Integer> param) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			// rückgabe ein String
+		});
 
 		// the items in the table will be updated automatically when ObservableList in
 		// the property changes
@@ -228,4 +244,8 @@ public class ProductTableController {
 		default -> System.out.println("No action assigned");
 		}
 	}
+	
+	/*
+	 * private TableCell<Category, 
+	 */
 }

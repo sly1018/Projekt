@@ -174,6 +174,7 @@ public class CategoryDbRepository implements CategoryRepository {
 			PreparedStatement stmt = conn.prepareStatement(DELETE_CATEGORY_STATEMENT);
 			// setting the id
 			stmt.setInt(1, id);
+			// TODO: abfrage ob in der produkt tabelle mit dieser categorie FK id zusammenhängen, Service Ebene zwichen rrepo und controller, kennt beide repos
 			// executing
 			int count = stmt.executeUpdate();
 			// when no data-set is affected, the category data-set doesn't exist anymore

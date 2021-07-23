@@ -30,14 +30,8 @@ public class Category {
 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("Category [id= ");
-		builder.append(getId());
-		builder.append( ", name = ");
-		builder.append(getName());
-		builder.append("]");
 		
-		return builder.toString();
+		return getName();
 	}
-
+	
 }

@@ -143,6 +143,7 @@ public class CategoryTableController {
 				int index = categories.indexOf(getSelectedCategory());
 				// setting the changed object into the index
 				categories.set(index, entity);
+				reload();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
