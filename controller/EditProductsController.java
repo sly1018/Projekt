@@ -64,7 +64,7 @@ public class EditProductsController {
 		System.out.println("initializing...");
 
 		// calling the controller to fill the list of categories
-		catController.setConnection(Constants.getDbUrl(), Constants.getUsername(), Constants.getPassword());
+		catController.setConnection(Constants.DB_URL, Constants.USERNAME, Constants.PASSWORD);
 		categories = catController.getAllCategories();
 
 		for (Category category : categories) {

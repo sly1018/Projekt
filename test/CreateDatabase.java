@@ -39,8 +39,7 @@ public class CreateDatabase {
 
 		// connection to the DB
 		try {
-			Connection con = DriverManager.getConnection(Constants.getDbUrl(), Constants.getUsername(),
-					Constants.getPassword());
+			Connection con = DriverManager.getConnection(Constants.DB_URL, Constants.USERNAME, Constants.PASSWORD);
 			System.out.println("Connection established");
 
 			// drop the table including the data

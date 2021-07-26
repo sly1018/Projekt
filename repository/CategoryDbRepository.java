@@ -9,9 +9,13 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import common.MessageBox;
 import exception.CategoryRepositoryException;
 import exception.ProductRepositoryException;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import model.Category;
+import service.CategoryAndProductTableService;
 
 public class CategoryDbRepository implements CategoryRepository {
 
@@ -171,15 +175,27 @@ public class CategoryDbRepository implements CategoryRepository {
 	public void deleteCategory(int id) throws CategoryRepositoryException {
 		// delete the category
 		try (Connection conn = DriverManager.getConnection(dbUrl, userName, password)) {
+			// the service for checking if category is used
+			CategoryAndProductTableService service = new CategoryAndProductTableService();
+			service.setConnection(Constants.DB_URL, Constants.USERNAME, Constants.PASSWORD);
+
 			PreparedStatement stmt = conn.prepareStatement(DELETE_CATEGORY_STATEMENT);
 			// setting the id
 			stmt.setInt(1, id);
-			// TODO: abfrage ob in der produkt tabelle mit dieser categorie FK id zusammenhängen, Service Ebene zwichen rrepo und controller, kennt beide repos
-			// executing
-			int count = stmt.executeUpdate();
-			// when no data-set is affected, the category data-set doesn't exist anymore
-			if (count == 0) {
-				throw new CategoryRepositoryException("Category with ID " + id + " doesn't exist");
+			
+			// check if the category is used by any product
+			if (service.checkIfCategoryUsedInProducts(id)) {
+				System.out.println("found");
+				MessageBox.show("Deleting Category", "A product is linked with the category", AlertType.INFORMATION,
+						ButtonType.OK);
+			} else {
+
+				// executing
+				int count = stmt.executeUpdate();
+				// when no data-set is affected, the category data-set doesn't exist anymore
+				if (count == 0) {
+					throw new CategoryRepositoryException("Category with ID " + id + " doesn't exist");
+				}
 			}
 		} catch (Exception e) {
 			System.err.println("Error during deleting a category dataset");

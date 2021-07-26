@@ -8,12 +8,9 @@ import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import model.Category;
 import repository.Constants;
 
 public class CategoryTableWindow {
-
-	private Category newCategory;
 
 	public void showModal() throws IOException {
 
@@ -25,7 +22,7 @@ public class CategoryTableWindow {
 		// getting the controller
 		CategoryTableController controller = loader.getController();
 		// setting the repository
-		controller.setConnection(Constants.getDbUrl(), Constants.getUsername(), Constants.getPassword());
+		controller.setConnection(Constants.DB_URL, Constants.USERNAME, Constants.PASSWORD);
 
 		// creating stage for the scene
 		Stage stage = new Stage(StageStyle.DECORATED);

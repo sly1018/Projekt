@@ -24,7 +24,7 @@ public class ProductTableMain extends Application {
 		// getting the controller
 		ProductTableController controller = loader.getController();
 		// setting the repository
-		controller.setConnection(Constants.getDbUrl(), Constants.getUsername(), Constants.getPassword());
+		controller.setConnection(Constants.DB_URL, Constants.USERNAME, Constants.PASSWORD);
 
 		Scene scene = new Scene(root, 500, 500);
 		// setting the CSS-Stylesheet and loading it
