@@ -63,13 +63,7 @@ public class EditProductsController {
 	public void initialize() {
 		System.out.println("initializing...");
 
-		// calling the controller to fill the list of categories
-		catController.setConnection(Constants.DB_URL, Constants.USERNAME, Constants.PASSWORD);
-		categories = catController.getAllCategories();
-
-		for (Category category : categories) {
-			cmbType.getItems().add(category);
-		}
+		loadCategories();
 
 		checkValid();
 
@@ -79,6 +73,17 @@ public class EditProductsController {
 		dtpEntrydate.valueProperty().addListener((o, oldval, newval) -> checkValid());
 		cmbType.valueProperty().addListener((o, oldval, newval) -> checkValid());
 
+	}
+
+	// method for loading the categories and filling up the list of categories
+	public void loadCategories() {
+		// calling the controller to fill the list of categories
+		catController.setConnection(Constants.DB_URL, Constants.USERNAME, Constants.PASSWORD);
+		categories = catController.getAllCategories();
+
+		for (Category category : categories) {
+			cmbType.getItems().add(category);
+		}
 	}
 
 	public void setProduct(Product editProduct) {
@@ -94,8 +99,9 @@ public class EditProductsController {
 			try {
 				cmbType.setValue(catController.getCategoryById(editProduct.getCategoryId()));
 			} catch (CategoryRepositoryException e) {
-				MessageBox.show("Loading Category", "Error occured during setting the category value\n" + e.getMessage(),
-						AlertType.ERROR, ButtonType.OK);
+				MessageBox.show("Loading Category",
+						"Error occured during setting the category value\n" + e.getMessage(), AlertType.ERROR,
+						ButtonType.OK);
 				e.printStackTrace();
 			}
 		}
@@ -119,7 +125,7 @@ public class EditProductsController {
 			productResult.setQuantity(Integer.parseInt(txtQuantity.getText()));
 			productResult.setPrice(Double.parseDouble(txtPrice.getText()));
 			productResult.setEntryDate(dtpEntrydate.getValue());
-			productResult.setDescription(txtComment.getText());						
+			productResult.setDescription(txtComment.getText());
 			productResult.setCategoryId(cmbType.getValue().getId());
 
 			// close the stage
@@ -146,7 +152,7 @@ public class EditProductsController {
 	public void onAddCategory(ActionEvent event) throws IOException {
 		CategoryTableWindow ctw = new CategoryTableWindow();
 		ctw.showModal();
-		// TODO: reload, ask
+		loadCategories();
 	}
 
 	private void checkValid() {

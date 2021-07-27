@@ -182,10 +182,11 @@ public class CategoryDbRepository implements CategoryRepository {
 			PreparedStatement stmt = conn.prepareStatement(DELETE_CATEGORY_STATEMENT);
 			// setting the id
 			stmt.setInt(1, id);
-			
+
+			System.out.println("id: " + id);
+
 			// check if the category is used by any product
 			if (service.checkIfCategoryUsedInProducts(id)) {
-				System.out.println("found");
 				MessageBox.show("Deleting Category", "A product is linked with the category", AlertType.INFORMATION,
 						ButtonType.OK);
 			} else {

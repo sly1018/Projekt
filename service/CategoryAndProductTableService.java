@@ -6,7 +6,6 @@ import common.MessageBox;
 import exception.ProductRepositoryException;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import model.Category;
 import model.Product;
 import repository.CategoryDbRepository;
 import repository.CategoryRepository;
@@ -27,7 +26,7 @@ public class CategoryAndProductTableService {
 
 	// method for checking if category is used in products
 	public boolean checkIfCategoryUsedInProducts(Integer id) {
-		
+
 		boolean retVal = false;
 
 		try {
@@ -36,8 +35,7 @@ public class CategoryAndProductTableService {
 			for (Product product : allProducts) {
 				if (product.getCategoryId() == id) {
 					retVal = true;
-				} else {
-					retVal = false;
+					System.out.println("retVal: " + retVal);
 				}
 			}
 
