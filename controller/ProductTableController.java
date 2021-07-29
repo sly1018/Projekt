@@ -1,20 +1,23 @@
 package controller;
 
 import common.MessageBox;
+import exception.CategoryRepositoryException;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
@@ -22,12 +25,16 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import model.Product;
+import repository.CategoryDbRepository;
+import repository.CategoryRepository;
 import repository.ProductDbRepository;
 import repository.ProductRepository;
 
 public class ProductTableController {
 
-	private ProductRepository repository;
+	private ProductRepository repositoryProduct;
+
+	private CategoryRepository repositoryCategory;
 
 	@FXML
 	private Button btnAdd;
@@ -62,9 +69,8 @@ public class ProductTableController {
 	@FXML
 	private TableColumn<Product, Integer> colQuantity;
 
-	// TODO: Integer in String umwandeln
 	@FXML
-	private TableColumn<Product, Integer> colCat;
+	private TableColumn<Product, String> colCat;
 
 	// for the binding
 	private ListProperty<Product> products;
@@ -94,7 +100,8 @@ public class ProductTableController {
 
 	// initializing the repository
 	public void setConnection(String dbUrl, String username, String password) {
-		repository = new ProductDbRepository(dbUrl, username, password);
+		repositoryProduct = new ProductDbRepository(dbUrl, username, password);
+		repositoryCategory = new CategoryDbRepository(dbUrl, username, password);
 		reload();
 	}
 
@@ -129,18 +136,20 @@ public class ProductTableController {
 		colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
 		colQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
 		colCat.setCellValueFactory(new PropertyValueFactory<>("categoryId"));
-		
-		// showing the string of category 
-		// TODO: colCat.setCellValueFactory(this::createCategoryCell)
-		colCat.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Product,Integer>, ObservableValue<Integer>>() {
-			// wird immer aufgerufen wenn eine TableCell von colCat erzeugt wird
-			@Override
-			public ObservableValue<Integer> call(CellDataFeatures<Product, Integer> param) {
-				// TODO Auto-generated method stub
-				return null;
-			}
-			// rückgabe ein String
-		});
+
+		colCat.setCellValueFactory(cellData ->  new SimpleStringProperty(getNameOfCategory(cellData.getValue().getCategoryId())));
+
+		// TODO: ask the coach about explanation
+//		colCat.setCellValueFactory(
+//				new Callback<TableColumn.CellDataFeatures<Product, String>, ObservableValue<String>>() {
+//
+//					@Override
+//					public ObservableValue<String> call(CellDataFeatures<Product, String> param) {
+//						System.out.println(getNameOfCategory(param.getValue().getCategoryId()));
+//						String retVal = getNameOfCategory(param.getValue().getCategoryId());
+//						return retVal;
+//					}
+//				});
 
 		// the items in the table will be updated automatically when ObservableList in
 		// the property changes
@@ -155,7 +164,7 @@ public class ProductTableController {
 			Product entity = dlg.showModal();
 			if (entity != null) {
 				System.out.println("New Product: " + entity);
-				repository.insertProduct(entity);
+				repositoryProduct.insertProduct(entity);
 				reload();
 			}
 		} catch (Exception e) {
@@ -177,7 +186,7 @@ public class ProductTableController {
 			if (entity != null) {
 				System.out.println("Changed product: " + entity);
 
-				repository.updateProduct(entity);
+				repositoryProduct.updateProduct(entity);
 
 				// get the index of the original-object
 				int index = products.indexOf(getSelectedProduct());
@@ -199,7 +208,7 @@ public class ProductTableController {
 			System.out.println("Delete product: " + getSelectedProduct());
 
 			// delete in the repository
-			repository.deleteProduct(getSelectedProduct().getId());
+			repositoryProduct.deleteProduct(getSelectedProduct().getId());
 			reload();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -213,7 +222,7 @@ public class ProductTableController {
 		try {
 			System.out.println("Reloading...");
 
-			this.products.set(FXCollections.observableArrayList(repository.selectAll()));
+			this.products.set(FXCollections.observableArrayList(repositoryProduct.selectAll()));
 		} catch (Exception e) {
 			e.printStackTrace();
 			MessageBox.show("Reload", "Error occured during loading" + e.getMessage(), AlertType.ERROR, ButtonType.OK);
@@ -244,8 +253,33 @@ public class ProductTableController {
 		default -> System.out.println("No action assigned");
 		}
 	}
-	
-	/*
-	 * private TableCell<Category, 
-	 */
+
+	private TableCell<Product, String> createCategoryNameCell(TableColumn<Product, String> col) {
+		return new TableCell<Product, String>() {
+			protected void updateItem(String value, boolean empty) {
+				super.updateItem(value, empty);
+				if (empty || value == null) {
+					setText("");
+				} else {
+					setText(value);
+				}
+			};
+		};
+
+	}
+
+	private String getNameOfCategory(int id) {
+
+		String retVal = null;
+
+		try {
+			retVal = repositoryCategory.selectById(id).getName();
+		} catch (CategoryRepositoryException e) {
+			e.printStackTrace();
+			MessageBox.show("Problem with Category", "Category name could not be loaded", AlertType.CONFIRMATION,
+					ButtonType.OK);
+		}
+		return retVal;
+	}
+
 }
