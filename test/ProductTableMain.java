@@ -26,7 +26,7 @@ public class ProductTableMain extends Application {
 		// setting the repository
 		controller.setConnection(Constants.DB_URL, Constants.USERNAME, Constants.PASSWORD);
 
-		Scene scene = new Scene(root, 500, 500);
+		Scene scene = new Scene(root, 850, 500);
 		// setting the CSS-Stylesheet and loading it
 		scene.getStylesheets().add(getClass().getResource("/views/productStyles.css").toExternalForm());
 		// show it
