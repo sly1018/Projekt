@@ -137,23 +137,26 @@ public class ProductTableController {
 		colQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
 		colCat.setCellValueFactory(new PropertyValueFactory<>("categoryId"));
 
+		// lambda expression, interchangeable with anonymous class when interface is a functional class
 		colCat.setCellValueFactory(cellData ->  new SimpleStringProperty(getNameOfCategory(cellData.getValue().getCategoryId())));
 
-		// TODO: ask the coach about explanation
-//		colCat.setCellValueFactory(
-//				new Callback<TableColumn.CellDataFeatures<Product, String>, ObservableValue<String>>() {
-//
-//					@Override
-//					public ObservableValue<String> call(CellDataFeatures<Product, String> param) {
-//						System.out.println(getNameOfCategory(param.getValue().getCategoryId()));
-//						String retVal = getNameOfCategory(param.getValue().getCategoryId());
-//						return retVal;
-//					}
-//				});
+		// anonymous class
+		colCat.setCellValueFactory(
+				new Callback<TableColumn.CellDataFeatures<Product, String>, ObservableValue<String>>() {
+
+					@Override
+					public ObservableValue<String> call(CellDataFeatures<Product, String> param) {
+						System.out.println(getNameOfCategory(param.getValue().getCategoryId()));
+						String retVal = getNameOfCategory(param.getValue().getCategoryId());
+						return new SimpleStringProperty(retVal);
+					}
+				});
 
 		// the items in the table will be updated automatically when ObservableList in
 		// the property changes
 		tblProducts.itemsProperty().bind(products);
+		
+		// TODO: sort comments, from German to English, lambda und anonyme klasse austauschbar nur wenn der interface ein funktionales interface ist
 
 	}
 
